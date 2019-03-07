@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectID } = require('mongodb')
 const assert = require('assert')
 const path = require('path')
 const mongoUrl = 'mongodb://localhost:27017'
@@ -35,8 +35,20 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
         return res.send(filteredArtists).status(200)
     })
 
-    app.get('/api/v1/artist/:id', (req, res) => {
-        res.status(500).send('Not implemented!')
+    app.get('/api/v1/artist/:id', async (req, res) => {
+        const artistId = req.params.id
+        if (!artistId) {
+            return res.sendStatus(400)
+        }
+
+        const artist = await db.collection('stats')
+            .findOne({ _id: new ObjectID(artistId) })
+
+        if (!artist) {
+            return res.sendStatus(405)
+        }
+
+        return res.send(artist).status(200)
     })
 
     app.use(express.static(path.join(__dirname, 'frontend/dist')))
