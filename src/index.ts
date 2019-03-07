@@ -1,23 +1,23 @@
-'use strict'
-const express = require('express')
+import * as express from 'express'
+import { Request, RequestHandler, Response, NextFunction } from 'express'
 const app = express()
 const port = 3000
 
-const { MongoClient, ObjectID } = require('mongodb')
-const assert = require('assert')
-const path = require('path')
+import { MongoClient, ObjectID } from 'mongodb'
+import * as path from 'path'
 const mongoUrl = 'mongodb://localhost:27017'
 const dbName = 'music-map'
 
-const errorHandler = callback => async (req, res) => {
-    try {
-        await callback(req, res)
+const errorHandler = (callback: RequestHandler) =>
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await callback(req, res, next)
+        }
+        catch (err) {
+            console.error(err)
+            res.sendStatus(500)
+        }
     }
-    catch (err) {
-        console.error(err)
-        res.sendStatus(500)
-    }
-}
 
 MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
     if (err) {
@@ -38,7 +38,7 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
             })
             .toArray()
 
-        const filteredArtists = {}
+        const filteredArtists: { [id: string]: string } = {}
         artists
             .forEach(a => filteredArtists[a._id] = a.artistName)
 
@@ -61,7 +61,7 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
         res.send(artist).status(200)
     }))
 
-    app.use(express.static(path.join(__dirname, 'frontend/dist')))
+    app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')))
 
     app.listen(port, () => console.log(`Setting phasers to stun... (port ${port})`))
 })
