@@ -9,7 +9,7 @@ const path = require('path')
 const mongoUrl = 'mongodb://localhost:27017'
 const dbName = 'music-map'
 
-MongoClient.connect(mongoUrl, (err, client) => {
+MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
     if (err) {
         console.error(err)
         process.exit(1)
