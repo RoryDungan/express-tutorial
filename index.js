@@ -17,8 +17,22 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
 
     const db = client.db(dbName)
 
-    app.get('/api/v1/artists', (req, res) => {
-        res.status(500).send('Not implemented!')
+    app.get('/api/v1/artists', async (req, res) => {
+        const artists = await db.collection('stats')
+            .find({}, {
+                projection: {
+                    artistName: 1,
+                    streams: 1,
+                    _id: 1
+                }
+            })
+            .toArray()
+
+        const filteredArtists = {}
+        artists
+            .forEach(a => filteredArtists[a._id] = a.artistName)
+
+        return res.send(filteredArtists).status(200)
     })
 
     app.get('/api/v1/artist/:id', (req, res) => {
