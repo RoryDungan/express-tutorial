@@ -9,6 +9,16 @@ const path = require('path')
 const mongoUrl = 'mongodb://localhost:27017'
 const dbName = 'music-map'
 
+const errorHandler = callback => async (req, res) => {
+    try {
+        await callback(req, res)
+    }
+    catch (err) {
+        console.error(err)
+        res.sendStatus(500)
+    }
+}
+
 MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
     if (err) {
         console.error(err)
@@ -17,7 +27,7 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
 
     const db = client.db(dbName)
 
-    app.get('/api/v1/artists', async (req, res) => {
+    app.get('/api/v1/artists', errorHandler(async (req, res) => {
         const artists = await db.collection('stats')
             .find({}, {
                 projection: {
@@ -32,24 +42,24 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
         artists
             .forEach(a => filteredArtists[a._id] = a.artistName)
 
-        return res.send(filteredArtists).status(200)
-    })
+        res.send(filteredArtists).status(200)
+    }))
 
-    app.get('/api/v1/artist/:id', async (req, res) => {
+    app.get('/api/v1/artist/:id', errorHandler(async (req, res) => {
         const artistId = req.params.id
         if (!artistId) {
-            return res.sendStatus(400)
+            res.sendStatus(400)
         }
 
         const artist = await db.collection('stats')
             .findOne({ _id: new ObjectID(artistId) })
 
         if (!artist) {
-            return res.sendStatus(405)
+            res.sendStatus(405)
         }
 
-        return res.send(artist).status(200)
-    })
+        res.send(artist).status(200)
+    }))
 
     app.use(express.static(path.join(__dirname, 'frontend/dist')))
 
