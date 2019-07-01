@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node lib/index",
+        "watch-start": "concurrently -k \"nodemon lib/index\" \"tsc --watch\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Rory Dungan <contact@rorydungan.com>",
@@ -17,6 +18,8 @@
     "devDependencies": {
         "@types/express": "^4.17.0",
         "@types/mongodb": "^3.1.28",
+        "concurrently": "^4.1.1",
+        "nodemon": "^1.19.1",
         "typescript": "^3.5.2"
     }
 }
