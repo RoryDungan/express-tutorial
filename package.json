@@ -7,7 +7,8 @@
         "build": "tsc",
         "start": "node lib/index",
         "watch-start": "concurrently -k \"nodemon lib/index\" \"tsc --watch\"",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest --env=node --coverage test",
+        "watch-test": "jest --env=node --colors --watch"
     },
     "author": "Rory Dungan <contact@rorydungan.com>",
     "license": "MIT",
