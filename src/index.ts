@@ -32,7 +32,6 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
             .find({}, {
                 projection: {
                     artistName: 1,
-                    streams: 1,
                     _id: 1
                 }
             })
