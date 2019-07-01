@@ -9,12 +9,12 @@
   "author": "Rory Dungan <contact@rorydungan.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.4",
-    "mongodb": "^3.1.13"
+    "express": "^4.17.1",
+    "mongodb": "^3.2.7"
   },
   "devDependencies": {
-    "@types/express": "^4.16.1",
-    "@types/mongodb": "^3.1.20",
-    "typescript": "^3.3.3333"
+    "@types/express": "^4.17.0",
+    "@types/mongodb": "^3.1.28",
+    "typescript": "^3.5.2"
   }
 }
