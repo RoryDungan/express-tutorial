@@ -5,6 +5,7 @@ const port = 3000
 
 import { MongoClient, ObjectID } from 'mongodb'
 import * as path from 'path'
+import { createArtistsService } from './artists-service';
 const mongoUrl = 'mongodb://localhost:27017'
 const dbName = 'music-map'
 
@@ -26,35 +27,25 @@ MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
     }
 
     const db = client.db(dbName)
+    const artistsService = createArtistsService(db.collection('stats'))
 
     app.get('/api/v1/artists', errorHandler(async (req, res) => {
-        const artists = await db.collection('stats')
-            .find({}, {
-                projection: {
-                    artistName: 1,
-                    _id: 1
-                }
-            })
-            .toArray()
-
-        const filteredArtists: { [id: string]: string } = {}
-        artists
-            .forEach(a => filteredArtists[a._id] = a.artistName)
-
-        res.send(filteredArtists).status(200)
+        const artists = await artistsService.getAllArtists()
+        res.send(artists).status(200)
     }))
 
     app.get('/api/v1/artist/:id', errorHandler(async (req, res) => {
-        const artistId = req.params.id
-        if (!artistId) {
+        const artistIdStr = req.params.id
+        if (!artistIdStr || !ObjectID.isValid(artistIdStr)) {
             res.sendStatus(400)
+            return
         }
+        const artistId = ObjectID.createFromHexString(artistIdStr)
 
-        const artist = await db.collection('stats')
-            .findOne({ _id: new ObjectID(artistId) })
+        const artist = await artistsService.getArtistDetails(artistId)
 
         if (!artist) {
-            res.sendStatus(405)
+            res.sendStatus(404)
         }
 
         res.send(artist).status(200)
