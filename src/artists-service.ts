@@ -45,7 +45,7 @@ export const createArtistsService = (dbCollection: Collection): IArtistsService 
                 .toArray()
 
             const artistsDictionary: ArtistsDictionary = {}
-            artistsArray.forEach(a => artistsDictionary[a._id] = a.name)
+            artistsArray.forEach(a => artistsDictionary[a._id] = a.artistName)
 
             return artistsDictionary
         }

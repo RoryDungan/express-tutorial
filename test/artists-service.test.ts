@@ -10,11 +10,11 @@ describe('ArtistsService', () => {
             const testData = [
                 {
                     _id: 'acdf123',
-                    name: 'BROCKHAMPTON',
+                    artistName: 'BROCKHAMPTON',
                 },
                 {
                     _id: '11dcff9',
-                    name: 'Madlib',
+                    artistName: 'Madlib',
                 }
             ]
             const expectedArtists = {
