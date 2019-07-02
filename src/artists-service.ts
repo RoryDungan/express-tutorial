@@ -31,23 +31,26 @@ export interface IArtistsService {
 }
 
 export const createArtistsService = (dbCollection: Collection): IArtistsService => {
+    const getArtistDetails = (artistId: ObjectID) => {
+        return dbCollection.findOne({ _id: artistId })
+    }
+    const getAllArtists = async () => {
+        const artistsArray = await dbCollection.find({}, {
+            projection: {
+                artistName: 1,
+                _id: 1
+            }
+        })
+            .toArray()
+
+        const artistsDictionary: ArtistsDictionary = {}
+        artistsArray.forEach(a => artistsDictionary[a._id] = a.artistName)
+
+        return artistsDictionary
+    }
+
     return {
-        getArtistDetails: (artistId: ObjectID) => {
-            return dbCollection.findOne({ _id: artistId })
-        },
-        getAllArtists: async () => {
-            const artistsArray = await dbCollection.find({}, {
-                projection: {
-                    artistName: 1,
-                    _id: 1
-                }
-            })
-                .toArray()
-
-            const artistsDictionary: ArtistsDictionary = {}
-            artistsArray.forEach(a => artistsDictionary[a._id] = a.artistName)
-
-            return artistsDictionary
-        }
+        getArtistDetails,
+        getAllArtists
     }
 }
