@@ -81,3 +81,7 @@ typings/
 
 # Typescript generated files
 lib/
+
+# VIM swap files
+*.swp
+
